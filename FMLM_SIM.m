@@ -43,6 +43,7 @@ x = linspace(d1, d2, D1)';
 Mesh = [X1(:), X2(:)]; % 2-D mesh
 data.x = [d1 * ones(D2, 1), x; d2 * ones(D2, 1), x; x(2:end-1), ...
     d1 * ones(D1-2, 1); x(2:end-1), d2 * ones(D1-2, 1)];
+
 data.fx = zeros(4*D1-4, 1); % specify boundaries
 
 [F, ~] = randomfield(Corr, Mesh, 'data', data, 'nsamples', n);
