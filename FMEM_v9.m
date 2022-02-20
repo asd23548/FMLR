@@ -1,4 +1,4 @@
-function [out] = FMEM_v9(data,options)
+function [output, opt_model] = FMEM_v9(data,options)
 %% Prepare the data
 X = data.X;
 Y = data.Y;
@@ -17,7 +17,7 @@ for i = 1:length(band_width_s)
     band_width = band_width_s(i);
     K{i} = Gaussian_Kernal_Sparse(mask, 4, band_width);
 end
-out = cell(1);
+output = cell(1);
 for q = 1:q_max
     % Initial values
     n = length(Y);
@@ -184,8 +184,6 @@ for q = 1:q_max
     Tau_opt = normalize_to_one(Tau_opt,col_index);
     q_e = sum(col_index);
     
-    
-    
     model.df = trace(H);
     model.y_hat = H*Y;
     
@@ -208,15 +206,14 @@ for q = 1:q_max
     alpha = 0.2;
     model.order_BIC(q) = sum(loss_total) + q_e^alpha*n^(1-alpha)*log(n);
     
-    out{q} = model;
-    
-    
-    
-    
+    output{q} = model;
+
     if q>1
-        if model.order_BIC(q)>model.order_BIC(q-1)
-            %                 || min(model.Pi)<0.01
+        if (model.order_BIC(q)>model.order_BIC(q-1)) ...
+            || (min(model.Pi)<0.01)
             break
         end
     end
 end
+
+opt_model = output{q-1}
